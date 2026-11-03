@@ -1,0 +1,26 @@
+# Configura o WildFly em tempo de build da imagem (servidor embutido, sem subir de verdade).
+# As expressões ${env.X:padrão} são resolvidas quando o container inicia.
+
+embed-server --std-out=echo --server-config=standalone.xml
+
+# Driver JDBC do PostgreSQL como módulo
+module add --name=org.postgresql --resources=/tmp/postgresql.jar --dependencies=java.se,jakarta.transaction.api
+
+/subsystem=datasources/jdbc-driver=postgresql:add(driver-name=postgresql, driver-module-name=org.postgresql, driver-class-name=org.postgresql.Driver, driver-xa-datasource-class-name=org.postgresql.xa.PGXADataSource)
+
+# Datasource usado pelo persistence.xml
+data-source add --name=AppDS \
+    --jndi-name=java:jboss/datasources/AppDS \
+    --driver-name=postgresql \
+    --connection-url=jdbc:postgresql://${env.DB_HOST:localhost}:${env.DB_PORT:5432}/${env.DB_NAME:app} \
+    --user-name=${env.DB_USER:app} \
+    --password=${env.DB_PASSWORD:app} \
+    --validate-on-match=true \
+    --background-validation=false \
+    --valid-connection-checker-class-name=org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLValidConnectionChecker \
+    --exception-sorter-class-name=org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLExceptionSorter
+
+# Remove a página de boas-vindas padrão do WildFly para o ROOT.war assumir o "/"
+/subsystem=undertow/server=default-server/host=default-host/location=\/:remove
+
+stop-embedded-server

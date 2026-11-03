@@ -1,0 +1,79 @@
+<ui:composition template="/WEB-INF/templates/layout.xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:pt="jakarta.faces.passthrough">
+
+    <ui:define name="titulo">Início · Jakarta Faces Starter</ui:define>
+
+    <ui:define name="conteudo">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+
+                <h1 class="h3 mb-1">Funcionando! 🎉</h1>
+                <p class="text-body-secondary mb-4">
+                    Faces + CDI + JPA + PostgreSQL conectados. Esta página e a entidade
+                    <code>Item</code> são só um exemplo — apague quando começar o seu domínio.
+                </p>
+
+                <h:form id="form">
+                    <h:messages id="msgs" globalOnly="true"
+                                styleClass="list-unstyled alert alert-success py-2"
+                                rendered="#{not empty facesContext.getMessageList(null)}"/>
+
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-body">
+                            <h:panelGroup id="campos" layout="block" styleClass="row g-2 align-items-start">
+                                <div class="col">
+                                    <h:outputLabel for="titulo" value="Novo item" styleClass="visually-hidden"/>
+                                    <h:inputText id="titulo" value="#{itemBean.novo.titulo}"
+                                                 styleClass="form-control #{component.valid ? '' : 'is-invalid'}"
+                                                 pt:placeholder="Digite um título e pressione Adicionar"
+                                                 pt:autocomplete="off"/>
+                                    <h:message for="titulo" styleClass="invalid-feedback d-block"/>
+                                </div>
+                                <div class="col-auto">
+                                    <h:commandButton value="Adicionar" action="#{itemBean.salvar}"
+                                                     styleClass="btn btn-primary">
+                                        <f:ajax execute="campos" render="@form"/>
+                                    </h:commandButton>
+                                </div>
+                            </h:panelGroup>
+                        </div>
+                    </div>
+
+                    <h:panelGroup layout="block" styleClass="text-center text-body-secondary py-4"
+                                  rendered="#{empty itemBean.itens}">
+                        Nenhum item ainda.
+                    </h:panelGroup>
+
+                    <h:dataTable value="#{itemBean.itens}" var="item"
+                                 rendered="#{not empty itemBean.itens}"
+                                 styleClass="table table-hover align-middle"
+                                 headerClass="table-light"
+                                 columnClasses=",text-nowrap text-body-secondary small,text-end">
+                        <h:column>
+                            <f:facet name="header">Título</f:facet>
+                            #{item.titulo}
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">Criado em</f:facet>
+                            <h:outputText value="#{item.criadoEm}">
+                                <f:convertDateTime type="localDateTime" pattern="dd/MM/yyyy HH:mm"/>
+                            </h:outputText>
+                        </h:column>
+                        <h:column>
+                            <h:commandLink action="#{itemBean.remover(item)}"
+                                           styleClass="btn btn-sm btn-outline-danger"
+                                           pt:data-bs-toggle="tooltip" pt:title="Remover">
+                                ✕
+                                <f:ajax execute="@this" render="@form"/>
+                            </h:commandLink>
+                        </h:column>
+                    </h:dataTable>
+                </h:form>
+
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
