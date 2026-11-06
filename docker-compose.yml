@@ -6,12 +6,13 @@ services:
       POSTGRES_DB: ${DB_NAME:-app}
       POSTGRES_USER: ${DB_USER:-app}
       POSTGRES_PASSWORD: ${DB_PASSWORD:-app}
+    command: ["postgres", "-p", "3216"]
     ports:
-      - "${DB_PORT_HOST:-6699}:5432"   # útil para conectar pela IDE / DBeaver
+      - "${DB_PORT_HOST:-3216}:3216"   # útil para conectar pela IDE / DBeaver
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      test: ["CMD-SHELL", "pg_isready -p 3216 -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
       interval: 5s
       timeout: 3s
       retries: 10
@@ -21,12 +22,19 @@ services:
     restart: unless-stopped
     environment:
       DB_HOST: db
-      DB_PORT: 5432
+      DB_PORT: 3216
       DB_NAME: ${DB_NAME:-app}
       DB_USER: ${DB_USER:-app}
       DB_PASSWORD: ${DB_PASSWORD:-app}
     ports:
-      - "${APP_PORT:-8181}:8080"
+      - "${APP_PORT:-8484}:8080"
+    volumes:
+      - type: bind
+        source: ./target/ROOT.war
+        target: /opt/jboss/wildfly/standalone/deployments/ROOT.war
+        read_only: true
+        bind:
+          create_host_path: false
     depends_on:
       db:
         condition: service_healthy

@@ -7,25 +7,22 @@
     <ui:define name="titulo">Início · Jakarta Faces Starter</ui:define>
 
     <ui:define name="conteudo">
-        <div class="row justify-content-center">
-            <div class="col-lg-8">
+        <div class="page-heading">
+            <h1>Visão geral</h1>
+            <p>Gerencie os itens cadastrados na aplicação.</p>
+        </div>
 
-                <h1 class="h3 mb-1">Funcionando! 🎉</h1>
-                <p class="text-body-secondary mb-4">
-                    Faces + CDI + JPA + PostgreSQL conectados. Esta página e a entidade
-                    <code>Item</code> são só um exemplo — apague quando começar o seu domínio.
-                </p>
-
+        <section id="itens" aria-label="Gerenciamento de itens">
                 <h:form id="form">
                     <h:messages id="msgs" globalOnly="true"
                                 styleClass="list-unstyled alert alert-success py-2"
                                 rendered="#{not empty facesContext.getMessageList(null)}"/>
 
                     <div class="card shadow-sm mb-4">
-                        <div class="card-body">
+                        <div class="card-body p-3 p-md-4">
                             <h:panelGroup id="campos" layout="block" styleClass="row g-2 align-items-start">
                                 <div class="col">
-                                    <h:outputLabel for="titulo" value="Novo item" styleClass="visually-hidden"/>
+                                    <h:outputLabel for="titulo" value="Adicionar item" styleClass="form-label fw-semibold"/>
                                     <h:inputText id="titulo" value="#{itemBean.novo.titulo}"
                                                  styleClass="form-control #{component.valid ? '' : 'is-invalid'}"
                                                  pt:placeholder="Digite um título e pressione Adicionar"
@@ -49,7 +46,7 @@
 
                     <h:dataTable value="#{itemBean.itens}" var="item"
                                  rendered="#{not empty itemBean.itens}"
-                                 styleClass="table table-hover align-middle"
+                                 styleClass="table table-hover align-middle bg-white"
                                  headerClass="table-light"
                                  columnClasses=",text-nowrap text-body-secondary small,text-end">
                         <h:column>
@@ -72,8 +69,6 @@
                         </h:column>
                     </h:dataTable>
                 </h:form>
-
-            </div>
-        </div>
+        </section>
     </ui:define>
 </ui:composition>

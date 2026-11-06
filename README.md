@@ -4,14 +4,16 @@ Esqueleto de projeto com **Jakarta EE 11** + **Jakarta Faces 4.1** + **Bootstrap
 
 ## Subir
 
+Com JDK 21 e Maven instalados, gere o WAR antes de iniciar os containers:
+
 ```bash
-cp .env.example .env          # opcional: ajuste senha/portas
+mvn package
 docker compose up --build
 ```
 
-Acesse http://localhost:8181. Para parar: `docker compose down`. Para apagar o banco também, use `docker compose down -v`.
+Acesse http://localhost:8484. Para parar: `docker compose down`. Para apagar o banco também, use `docker compose down -v`.
 
-Depois de mudar código Java ou `.xhtml`, rode de novo `docker compose up --build app`.
+Durante o desenvolvimento, depois de mudar código Java ou arquivos `.xhtml`, rode `mvn package`. O WAR em `target/ROOT.war` está montado no WildFly, que detecta e publica a atualização automaticamente. Não é necessário reconstruir a imagem Docker a cada alteração. Para mudanças no Dockerfile ou na configuração do WildFly, use `docker compose up --build app`.
 
 ## Estrutura
 
